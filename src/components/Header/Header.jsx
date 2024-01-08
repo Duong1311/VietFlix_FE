@@ -1,6 +1,15 @@
+import { useState } from "react";
+import Login from "../../pages/Login/Login";
+import Register from "../../pages/Register/Register";
+
 export default function Header() {
+  const [showLogin, setShowLogin] = useState(false);
+  const handleOnClode = () => {
+    setShowLogin(false);
+  };
+
   return (
-    <div className="w-full h-[60px] bg-black flex justify-center items-center ">
+    <div className="w-full h-[60px] bg-black flex justify-center items-center">
       <div className=" w-5/6  flex justify-between flex-row items-center">
         <div className="flex">
           <div className="self-center">
@@ -57,9 +66,17 @@ export default function Header() {
             </div>
             <div className="leading-6">Home</div>
           </div>
-          <div className="underline">Đăng Nhập</div>
+          <div
+            className="underline"
+            onClick={() => {
+              setShowLogin(true);
+            }}
+          >
+            Đăng Nhập
+          </div>
         </div>
       </div>
+      <Login onClose={handleOnClode} visible={showLogin} />
     </div>
   );
 }

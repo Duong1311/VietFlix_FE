@@ -102,7 +102,7 @@ const Home = () => {
                     //   src={image?.url}
                     // />
                     <div
-                      className="bg-[#17161B] min-w-[4rem] rounded-3xl flex justify-center items-center mr-2 px-4 py-1"
+                      className="bg-[#17161B] min-w-[4rem] rounded-3xl flex justify-center items-center mr-2 px-4 py-1 even:bg-violet-700"
                       key={image?.id}
                     >
                       <div className="text-white text-center">{image?.url}</div>
