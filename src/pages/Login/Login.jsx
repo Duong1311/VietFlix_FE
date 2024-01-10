@@ -4,6 +4,7 @@ import { FaArrowRightLong } from "react-icons/fa6";
 import Register from "../Register/Register";
 import { useState } from "react";
 
+// eslint-disable-next-line react/prop-types
 const Login = ({ visible, onClose }) => {
   const [showRegister, setShowRegister] = useState(false);
   const handleOnClode = () => {

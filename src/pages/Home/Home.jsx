@@ -1,71 +1,125 @@
-import { useRef } from "react";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
-import Slider from "rc-slider";
+import { useEffect, useState } from "react";
+// import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import MenuItem from "@mui/material/MenuItem";
+// import FormHelperText from "@mui/material/FormHelperText";
+import FormControl from "@mui/material/FormControl";
+import Select from "@mui/material/Select";
+// import Slider from "rc-slider";
 import "rc-slider/assets/index.css";
 import { FaStar } from "react-icons/fa";
-const Home = () => {
-  const sliderRef1 = useRef(null);
-  const sliderRef2 = useRef(null);
+import {
+  getListMovies,
+  getSearch,
+  getFilterMovies,
+} from "../../services/Movies";
+// import { useSearchParams } from "react-router-dom";
 
-  const scrollAmount = 100;
-  const images = [
-    {
-      id: 1,
-      url: "Mot",
-    },
-    {
-      id: 2,
-      url: "Hai",
-    },
-    {
-      id: 3,
-      url: "Ba",
-    },
-    {
-      id: 4,
-      url: "bon",
-    },
-    {
-      id: 5,
-      url: "năm",
-    },
-    {
-      id: 6,
-      url: "sau",
-    },
-  ];
-  const images2 = [
-    {
-      id: 1,
-      url: "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jLLtx3nTRSLGPAKl4RoIv1FbEBr.jpg",
-    },
-    {
-      id: 2,
-      url: "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jLLtx3nTRSLGPAKl4RoIv1FbEBr.jpg",
-    },
-    {
-      id: 3,
-      url: "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jLLtx3nTRSLGPAKl4RoIv1FbEBr.jpg",
-    },
-    {
-      id: 4,
-      url: "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jLLtx3nTRSLGPAKl4RoIv1FbEBr.jpg",
-    },
-    {
-      id: 5,
-      url: "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jLLtx3nTRSLGPAKl4RoIv1FbEBr.jpg",
-    },
-    {
-      id: 6,
-      url: "https://www.themoviedb.org/t/p/w600_and_h900_bestv2/jLLtx3nTRSLGPAKl4RoIv1FbEBr.jpg",
-    },
-  ];
+// import { AppContext } from "../../context/AppContext";
+import { useLocation, useNavigate } from "react-router-dom";
+// import FilterItem from "../../components/FilterItem/FilterItem";
+const Home = () => {
+  // const sliderRef1 = useRef(null);
+  // const sliderRef2 = useRef(null);
+  const [datas, setData] = useState();
+  // const { valueQuery, setValueQuery } = useContext(AppContext);
+  // console.log(valueQuery);
+  const [genre, setGenre] = useState("All");
+  const [language, setLanguage] = useState("All");
+  const [year, setYear] = useState("All");
+
+  const navigate = useNavigate();
+  const handleSubmit = () => {
+    const searchParams = {
+      genre: genre,
+      language: language,
+      year: year,
+    };
+    navigate({
+      pathname: "/",
+      search: new URLSearchParams(searchParams).toString(),
+    });
+  };
+  // const scrollAmount = 100;
+  // const images = [
+  //   {
+  //     id: 1,
+  //     url: "Mot",
+  //   },
+  //   {
+  //     id: 2,
+  //     url: "Hai",
+  //   },
+  //   {
+  //     id: 3,
+  //     url: "Ba",
+  //   },
+  //   {
+  //     id: 4,
+  //     url: "bon",
+  //   },
+  //   {
+  //     id: 5,
+  //     url: "năm",
+  //   },
+  //   {
+  //     id: 6,
+  //     url: "sau",
+  //   },
+  // ];
+
+  const genres = ["Action", "Horror"];
+
+  const languages = ["English", "VietNam"];
+
+  const years = ["2010", "2011", "2012", "2013", "2014", "2015"];
+
+  const getAllMovies = async () => {
+    try {
+      const res = await getListMovies();
+      console.log(res.data);
+      setData(res.data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+  const getMoviesFilter = async (filterMessage) => {
+    try {
+      const res = await getFilterMovies(filterMessage);
+      console.log(res.data);
+      setData(res.data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const getSearchMovie = async (searchMessage) => {
+    try {
+      const res = await getSearch(searchMessage);
+      console.log(res.data);
+      setData(res.data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+  const pathname = useLocation();
+  useEffect(() => {
+    const searchParams = new URLSearchParams(pathname.search);
+    const params = Object.fromEntries(searchParams.entries());
+    if (Object.keys(params).length === 0) {
+      getAllMovies();
+      return;
+    }
+    if (Object.prototype.hasOwnProperty.call(params, "search")) {
+      getSearchMovie(params.search);
+      return;
+    }
+    getMoviesFilter(params.genre + "-" + params.language + "-" + params.year);
+  }, [pathname.search]);
+
   return (
-    <div className="w-full bg-black flex flex-col justify-center items-center text-white">
+    <div className="w-full bg-black flex flex-col items-center text-white min-h-[100vh]">
       <div className="w-5/6 ">
-        {" "}
         <div className="">
-          {" "}
           <div className="">
             <div className="flex">
               <div className="self-center mr-2">
@@ -82,7 +136,77 @@ const Home = () => {
               </div>
               <div className="font-semibold text-xl">Filter</div>
             </div>
-            <div className="items-center flex mt-3">
+
+            <div className="flex flex-row z-0">
+              <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                <Select
+                  value={genre}
+                  onChange={(event) => setGenre(event.target.value)}
+                  displayEmpty
+                  inputProps={{ "aria-label": "Without label" }}
+                  className="bg-white "
+                >
+                  <MenuItem value="All">
+                    <em>All</em>
+                  </MenuItem>
+                  {genres.map((genre, i) => (
+                    <MenuItem key={i} value={genre}>
+                      {genre}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {/* <FormHelperText>Without label</FormHelperText> */}
+              </FormControl>
+              <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                {/* <FormControl className="min-w-[220px] m-5" size="small"> */}
+                <Select
+                  value={language}
+                  onChange={(event) => setLanguage(event.target.value)}
+                  displayEmpty
+                  inputProps={{ "aria-label": "Without label" }}
+                  className="bg-white "
+                >
+                  <MenuItem value="All">
+                    <em>All</em>
+                  </MenuItem>
+                  {languages.map((language, i) => (
+                    <MenuItem key={i} value={language}>
+                      {language}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {/* <FormHelperText>Without label</FormHelperText> */}
+              </FormControl>
+              <FormControl sx={{ m: 1, minWidth: 120 }} size="small">
+                <Select
+                  value={year}
+                  onChange={(event) => setYear(event.target.value)}
+                  displayEmpty
+                  inputProps={{ "aria-label": "Without label" }}
+                  className="bg-white "
+                >
+                  <MenuItem value="All">
+                    <em>All</em>
+                  </MenuItem>
+                  {years.map((year, i) => (
+                    <MenuItem key={i} value={year}>
+                      {year}
+                    </MenuItem>
+                  ))}
+                </Select>
+                {/* <FormHelperText>Without label</FormHelperText> */}
+              </FormControl>
+              <div
+                onClick={handleSubmit}
+                className="flex items-center h-[40px] self-center ml-2 bg-red-600 w-[4rem]   text-white cursor-pointer hover:bg-red-700 font-semibold rounded-sm px-4 py-1"
+              >
+                <div className="flex text-lg justify-center items-center w-full">
+                  Lọc
+                </div>
+              </div>
+            </div>
+
+            {/* <div className="items-center flex mt-3">
               <button
                 className="nav-btn"
                 onClick={() => {
@@ -101,12 +225,14 @@ const Home = () => {
                     //   key={image?.id}
                     //   src={image?.url}
                     // />
-                    <div
-                      className="bg-[#17161B] min-w-[4rem] rounded-3xl flex justify-center items-center mr-2 px-4 py-1 even:bg-violet-700"
-                      key={image?.id}
-                    >
-                      <div className="text-white text-center">{image?.url}</div>
-                    </div>
+                    // <div
+                    //   className="bg-[#17161B] min-w-[4rem] rounded-3xl flex justify-center items-center mr-2 px-4 py-1 even:bg-violet-700"
+                    //   key={image?.id}
+                    // >
+                    //   <div className="text-white text-center">{image?.url}</div>
+                    // </div>
+
+                    <FilterItem key={image?.id} value={image} />
                   );
                 })}
               </div>
@@ -134,12 +260,6 @@ const Home = () => {
               <div className="flex overflow-x-hidden" ref={sliderRef2}>
                 {images.map((image) => {
                   return (
-                    // <img
-                    //   className="image"
-                    //   alt="sliderImage"
-                    //   key={image?.id}
-                    //   src={image?.url}
-                    // />
                     <div
                       className="bg-[#17161B] min-w-[4rem] rounded-2xl flex mr-2 cursor-pointer active:bg-red-600"
                       key={image?.id}
@@ -158,9 +278,9 @@ const Home = () => {
               >
                 <FaChevronRight />
               </button>
-            </div>
+            </div> */}
 
-            <div className="ml-5 w-[200px] mt-3">
+            {/* <div className="ml-5 w-[200px] mt-3">
               <div>Năm :</div>{" "}
               <Slider
                 // disabled={!enablePrice}
@@ -204,12 +324,7 @@ const Home = () => {
                   },
                 }}
               ></Slider>
-            </div>
-            <div className="flex items-center bg-red-600 w-[4rem]   text-white cursor-pointer hover:bg-red-700 font-semibold rounded-sm px-4 py-1">
-              <div className="flex text-lg justify-center items-center w-full">
-                Lọc
-              </div>
-            </div>
+            </div> */}
           </div>
         </div>
         <div className="mt-4">
@@ -230,29 +345,34 @@ const Home = () => {
           </div>
         </div>
         <div className="grid gap-4 grid-cols-5 mt-7">
-          {images2.map((images) => {
-            return (
-              <div key={images?.id}>
-                <div className="relative">
-                  <img className="" src={images?.url} alt="" />
-                  <div className="absolute bottom-3 left-3 flex flex-col">
-                    <div className="bg-[#E50914] px-2 rounded flex justify-center items-center max-w-[4rem]">
-                      <div className="text-sm">Fantasy</div>
-                    </div>
-                    <div className="flex flex-row ">
-                      <div className="text-yellow-400">9.9</div>
-                      <div className="self-center ml-1">
-                        <FaStar className="" />
+          {datas &&
+            datas?.map((data) => {
+              return (
+                <div key={data?.id}>
+                  <div className="relative">
+                    <img
+                      className="hover:scale-110 transform transition duration-y z-0"
+                      src={data?.thumbnail}
+                      alt=""
+                    />
+                    <div className="absolute bottom-3 left-3 flex flex-col">
+                      <div className="bg-[#E50914] px-2 rounded flex justify-center items-center max-w-[4rem]">
+                        <div className="text-sm">{data.genres[1]}</div>
                       </div>
-                    </div>
-                    <div className="font-semibold text-xl text-ellipsis overflow-hidden line-clamp-2">
-                      Tên phim
+                      <div className="flex flex-row ">
+                        <div className="text-yellow-400">{data.imdbID}</div>
+                        <div className="self-center ml-1">
+                          <FaStar className="" />
+                        </div>
+                      </div>
+                      <div className="font-semibold text-xl text-ellipsis overflow-hidden hover:overflow-visible line-clamp-1">
+                        {data.name}
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
-            );
-          })}
+              );
+            })}
         </div>
       </div>
     </div>
