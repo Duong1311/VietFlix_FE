@@ -2,6 +2,7 @@ import { CiLock } from "react-icons/ci";
 import { CiUser } from "react-icons/ci";
 import { FaArrowRightLong } from "react-icons/fa6";
 
+// eslint-disable-next-line react/prop-types
 const Register = ({ visible1, onClose1 }) => {
   if (!visible1) return null;
   return (
