@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { CRow, CCol, CCard, CCardBody, CCardHeader } from "@coreui/react";
 import { Button, Form, Input } from "antd";
+import { useForm } from "antd/lib/form/Form";
 
 const formItemLayout = {
   labelCol: {
@@ -14,6 +15,7 @@ const formItemLayout = {
 };
 
 const Add = () => {
+  const [form] = useForm();
   const [formData, setFormData] = useState({
     name: "",
     genre: "",
@@ -37,18 +39,26 @@ const Add = () => {
   };
 
   const handleSubmit = () => {
-    console.log("Form data submitted:", formData);
+    form
+      .validateFields() // Kiểm tra và hiển thị thông báo lỗi
+      .then(() => {
+        // Nếu không có lỗi, tiếp tục xử lý submit
+        console.log("Form data submitted:", formData);
+      })
+      .catch((errorInfo) => {
+        console.log("Validation failed:", errorInfo);
+      });
   };
 
   return (
-    <CRow className="flex items-center justify-center h-screen">
-      <CCol className="mb-2 w-1/2">
+    <CRow className="flex items-center justify-center min-h-[100vh]">
+      <CCol className="m-6 w-1/2">
         <CCard>
           <CCardHeader className="flex justify-center text-3xl items-center mb-8">
             Add New Movie
           </CCardHeader>
           <CCardBody>
-            <Form {...formItemLayout} onFinish={handleSubmit}>
+            <Form {...formItemLayout} form={form} onFinish={handleSubmit}>
               <Form.Item
                 label="Tên"
                 labelAlign="left"
@@ -245,7 +255,7 @@ const Add = () => {
                 type="primary"
                 block
                 onClick={handleSubmit}
-                className="w-full px-4  bg-red-500 text-black mt-2"
+                className="w-full px-4  bg-red-500 text-black mt-2 text-white"
               >
                 Submit
               </Button>
