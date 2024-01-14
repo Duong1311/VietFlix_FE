@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+/* eslint-disable no-useless-escape */
+import { useState } from "react";
 
 const UserMovieDetails = () => {
   const [showVideo, setShowVideo] = useState(false);
