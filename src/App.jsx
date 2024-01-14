@@ -5,7 +5,9 @@ import Home from "./pages/Home/Home";
 import History from "./pages/History/History";
 import Favorite from "./pages/Favorite/Favorite";
 import { AppProvider } from "./context/AppContext";
-import Add from "./pages/Admin/add";
+import AddMovie from "./pages/Admin/AddMovie";
+import UserMovieDetails from "./pages/Details/MovieDetails";
+import AdminMovieDetails from "./pages/Admin/AdminMovieDetails";
 
 function App() {
   return (
@@ -16,7 +18,9 @@ function App() {
           <Route path="/" element={<Home />} />
           <Route path="/history" element={<History />} />
           <Route path="/favorite" element={<Favorite />} />
-          <Route path="/add" element={<Add />} />
+          <Route path="/add" element={<AddMovie />} />
+          <Route path="/details" element={<UserMovieDetails />} />
+          <Route path="/adm-details" element={<AdminMovieDetails />} />
         </Routes>
         <Footer />
       </AppProvider>

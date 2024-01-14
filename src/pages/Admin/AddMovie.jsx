@@ -14,7 +14,7 @@ const formItemLayout = {
   },
 };
 
-const Add = () => {
+const AddMovie = () => {
   const [form] = useForm();
   const [formData, setFormData] = useState({
     name: "",
@@ -40,9 +40,8 @@ const Add = () => {
 
   const handleSubmit = () => {
     form
-      .validateFields() // Kiểm tra và hiển thị thông báo lỗi
+      .validateFields()
       .then(() => {
-        // Nếu không có lỗi, tiếp tục xử lý submit
         console.log("Form data submitted:", formData);
       })
       .catch((errorInfo) => {
@@ -267,4 +266,4 @@ const Add = () => {
   );
 };
 
-export default Add;
+export default AddMovie;
