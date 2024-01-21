@@ -9,4 +9,14 @@ const getUserLogin = (email, pass) => {
   return axios.get(api);
 };
 
-export { getUserInfo, getUserLogin };
+const getUserPass = (member_id) => {
+  const api = "members/getMemberPass/" + member_id;
+  return axios.get(api);
+};
+
+const setUserInfo = (info) => {
+  const api = "members/changeInfo";
+  return axios.post(api, info);
+};
+
+export { getUserInfo, getUserLogin, getUserPass, setUserInfo };

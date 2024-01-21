@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
-import { getUserInfo } from "../../services/User";
+import { getUserInfo, getUserPass, setUserInfo } from "../../services/User";
 
 const Profile = () => {
   const userID = localStorage.getItem("member_id");
@@ -11,15 +11,55 @@ const Profile = () => {
   const [userConfPass, setConfPass] = useState("");
 
   const [active, setActive] = useState(false);
+  const [inputOld, setInputOld] = useState(false);
+
+  const [isEdit, setIsEdit] = useState(false);
+
+  const [info, setInfo] = useState({});
+
   const handleClick = () => {
     setActive(!active);
+    setInputOld(!inputOld);
   };
-  const handleSubmit = () => {};
+
+  const handleSubmit = async () => {
+    try {
+      console.log(userOldPass);
+
+      const res = await getUserPass(userID);
+      console.log(res.data);
+      if (userOldPass == res.data) {
+        setIsEdit(true);
+        setInputOld(false);
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const handEdit = async () => {
+    try {
+      setInfo({
+        member_id: userID,
+        mail: user.mail,
+        pass: userNewPass,
+        member_name: userName,
+        package_id: user.package_id,
+        exp_package: user.exp_package,
+      });
+      const res = await setUserInfo(info);
+      console.log(res.data);
+      alert(res.data);
+      setUser(res.data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
 
   const getInfo = async (userID) => {
     try {
       const res = await getUserInfo(userID);
-      console.log(res.data);
+      // console.log(res.data);
       setUser(res.data);
     } catch (error) {
       console.log(error.message);
@@ -27,7 +67,7 @@ const Profile = () => {
   };
   useEffect(() => {
     getInfo(userID);
-  }, []);
+  }, [userID]);
 
   return (
     <div className="w-full bg-black flex flex-col items-center text-white min-h-[100vh]">
@@ -77,7 +117,7 @@ const Profile = () => {
           </button>
         </div>
         {/* form */}
-        {active && (
+        {inputOld && (
           <div className="flex flex-col w-[19em] mt-8">
             <div>Insert password to continue</div>
             <input
@@ -87,14 +127,17 @@ const Profile = () => {
               value={userOldPass}
             />
             <div className="flex justify-center items-center mt-8">
-              <button className="bg-[#E50914] rounded-3xl py-2 px-6">
+              <button
+                className="bg-[#E50914] rounded-3xl py-2 px-6"
+                onClick={handleSubmit}
+              >
                 <div>Continue</div>
               </button>
             </div>
           </div>
         )}
 
-        {active && (
+        {isEdit && (
           <div className="flex flex-col w-[19em] mt-5">
             <div className="mt-3">UserName</div>
             <input
@@ -119,7 +162,7 @@ const Profile = () => {
             />
             <div className="flex justify-center items-center mt-8">
               <button
-                onClick={handleSubmit}
+                onClick={handEdit}
                 className="bg-[#E50914] rounded-3xl py-2 px-6"
               >
                 <div>Continue</div>
