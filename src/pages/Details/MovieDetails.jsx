@@ -180,71 +180,56 @@ const UserMovieDetails = () => {
           <p className="text-white mt-2">{movieData.description}</p>
         </div>
       </div>
-      {/* {showVideo && (
-        <div className="mt-4 flex mt-4 justify-center">
-          <div
-            style={{
-              position: "relative",
-              width: "100%",
-              paddingTop: "56.25%",
-            }}
-          >
-            <iframe
-              width="100%"
-              height="100%"
-              src={`https://www.youtube.com/embed/${videoId}`}
-              title="YouTube video player"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-              }}
-            ></iframe>
-          </div>
-        </div>
-      )} */}
-      {/* {showVideo && (
-        <div className="mt-4 flex mt-4 justify-center">
-          <iframe
-            title="Video Player"
-            width="100%"
-            height="500"
-            src={movieData.source}
-            allowFullScreen
-          ></iframe>
-        </div>
-      )} */}
+
       {showVideo && (
         <div className="mt-4 flex mt-4 justify-center">
-          {/* <ArtPlayer
-            src={movieData.source}
-            title={movieData.name}
-            cover={movieData.thumbnail}
-            ref={playerRef}
-          /> */}
-          {/* <Artplayer
-            option={{
-              url: "https://artplayer.org/assets/sample/video.mp4",
-              autoPlayBack: "true",
-            }}
-            style={{
-              width: "600px",
-              height: "400px",
-              margin: "60px auto 0",
-            }}
-            getInstance={(art) => console.info(art)}
-          /> */}
           <Artplayer
             option={{
               container: ".artplayer-app",
-              url: "https://artplayer.org/assets/sample/video.mp4",
-              poster: "/assets/sample/poster.jpg",
+              url: movieData.source,
               volume: 0.5,
-              // ... thêm tất cả các cấu hình khác của bạn
+              isLive: false,
+              muted: false,
+              autoplay: false,
+              pip: true,
+              autoSize: true,
+              autoMini: true,
+              setting: true,
+              loop: true,
+              playbackRate: true,
+              fullscreen: true,
+              // subtitleOffset: true,
+              miniProgressBar: true,
+              mutex: true,
+              backdrop: true,
+              playsInline: true,
+              autoPlayback: true,
+              airplay: true,
+              theme: "#e50914",
+              lang: navigator.language.toLowerCase(),
+              quality: [
+                {
+                  default: true,
+                  html: "SD 480P",
+                  url: "/assets/sample/video.mp4",
+                },
+                {
+                  html: "HD 720P",
+                  url: "/assets/sample/video.mp4",
+                },
+              ],
+              // subtitle: {
+              //   url: "/assets/sample/subtitle.srt",
+              //   type: "srt",
+              //   style: {
+              //     color: "#fe9200",
+              //     fontSize: "20px",
+              //   },
+              //   encoding: "utf-8",
+              // },
+              icons: {
+                loading: '<img src="/assets/Spinner-1s-200px.gif">',
+              },
             }}
             style={{
               width: "600px",
