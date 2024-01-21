@@ -15,7 +15,7 @@ import {
 // import { useSearchParams } from "react-router-dom";
 
 // import { AppContext } from "../../context/AppContext";
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, Link } from "react-router-dom";
 // import FilterItem from "../../components/FilterItem/FilterItem";
 const Home = () => {
   // const sliderRef1 = useRef(null);
@@ -350,7 +350,7 @@ const Home = () => {
             datas?.map((data) => {
               return (
                 <div key={data?.id}>
-                  <div className="relative">
+                  <Link to={`/details/${data.id}`} className="relative">
                     <img
                       className="hover:scale-110 transform transition duration-y z-0"
                       src={data?.thumbnail}
@@ -370,7 +370,7 @@ const Home = () => {
                         {data.name}
                       </div>
                     </div>
-                  </div>
+                  </Link>
                 </div>
               );
             })}

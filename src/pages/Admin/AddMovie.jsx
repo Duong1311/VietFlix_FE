@@ -3,6 +3,7 @@ import { CRow, CCol, CCard, CCardBody, CCardHeader } from "@coreui/react";
 import { Button, Form, Input, notification } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { addMovie } from "../../services/Movies";
+import { useNavigate } from "react-router-dom";
 
 const formItemLayout = {
   labelCol: {
@@ -16,6 +17,7 @@ const formItemLayout = {
 };
 
 const AddMovie = () => {
+  const navigate = useNavigate();
   const [form] = useForm();
   const [movieData, setMovieData] = useState({
     name: "",
@@ -33,10 +35,18 @@ const AddMovie = () => {
   });
 
   const handleInputChange = (fieldName, value) => {
-    setMovieData({
-      ...movieData,
-      [fieldName]: value,
-    });
+    if (fieldName === "genres" || fieldName === "languages") {
+      const arrayValue = value.split(",").map((item) => item.trim());
+      setMovieData({
+        ...movieData,
+        [fieldName]: arrayValue,
+      });
+    } else {
+      setMovieData({
+        ...movieData,
+        [fieldName]: value,
+      });
+    }
   };
 
   const handleSubmit = () => {
@@ -47,6 +57,7 @@ const AddMovie = () => {
           .then((response) => {
             console.log("Thêm phim thành công:", response.data);
             notification.success({ message: "Thêm phim thành công!" });
+            navigate("/adm-list");
           })
           .catch((error) => {
             console.error("Lỗi khi thêm phim:", error);
@@ -91,8 +102,8 @@ const AddMovie = () => {
               >
                 <Input
                   placeholder="Nhập thể loại"
-                  value={movieData.genre}
-                  onChange={(e) => handleInputChange("genre", e.target.value)}
+                  value={movieData.genres}
+                  onChange={(e) => handleInputChange("genres", e.target.value)}
                   className="w-full px-3 py-2 border rounded"
                 />
               </Form.Item>
@@ -105,9 +116,9 @@ const AddMovie = () => {
               >
                 <Input
                   placeholder="Nhập ngôn ngữ phim"
-                  value={movieData.language}
+                  value={movieData.languages}
                   onChange={(e) =>
-                    handleInputChange("language", e.target.value)
+                    handleInputChange("languages", e.target.value)
                   }
                   className="w-full px-3 py-2 border rounded"
                 />
@@ -180,8 +191,8 @@ const AddMovie = () => {
               >
                 <Input
                   placeholder="Nhập điểm IMDB"
-                  value={movieData.point}
-                  onChange={(e) => handleInputChange("point", e.target.value)}
+                  value={movieData.imdbID}
+                  onChange={(e) => handleInputChange("imdbID", e.target.value)}
                   className="w-full px-3 py-2 border rounded"
                 />
               </Form.Item>
@@ -194,8 +205,10 @@ const AddMovie = () => {
               >
                 <Input
                   placeholder="Nhập mô tả của phim"
-                  value={movieData.des}
-                  onChange={(e) => handleInputChange("des", e.target.value)}
+                  value={movieData.description}
+                  onChange={(e) =>
+                    handleInputChange("description", e.target.value)
+                  }
                   className="w-full px-3 py-2 border rounded"
                 />
               </Form.Item>
@@ -214,8 +227,10 @@ const AddMovie = () => {
               >
                 <Input
                   placeholder="Nhập URL thumbnail"
-                  value={movieData.thumb}
-                  onChange={(e) => handleInputChange("thumb", e.target.value)}
+                  value={movieData.thumbnail}
+                  onChange={(e) =>
+                    handleInputChange("thumbnail", e.target.value)
+                  }
                   className="w-full px-3 py-2 border rounded"
                 />
               </Form.Item>

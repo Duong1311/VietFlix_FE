@@ -4,6 +4,7 @@ import { CRow, CCol, CCard, CCardBody, CCardHeader } from "@coreui/react";
 import { Form, Input, Button, notification } from "antd";
 import { useForm } from "antd/lib/form/Form";
 import { getAdminMovieDetailByID, updateMovie } from "../../services/Movies";
+import { useNavigate } from "react-router-dom";
 
 const formItemLayout = {
   labelCol: {
@@ -21,6 +22,10 @@ const AdminMovieDetails = () => {
   const [form] = useForm();
   const [formData, setFormData] = useState({});
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  useEffect(() => {
+    form.setFieldsValue(formData);
+  }, [formData]);
 
   useEffect(() => {
     const fetchMovieDetail = async () => {
@@ -38,10 +43,26 @@ const AdminMovieDetails = () => {
   }, [id]);
 
   const handleInputChange = (fieldName, value) => {
-    setFormData({
-      ...formData,
-      [fieldName]: value,
-    });
+    if (fieldName === "genres") {
+      const genresArray = value.split(",").map((genre) => genre.trim());
+      setFormData({
+        ...formData,
+        [fieldName]: genresArray,
+      });
+    } else if (fieldName === "languages") {
+      const languagesArray = value
+        .split(",")
+        .map((language) => language.trim());
+      setFormData({
+        ...formData,
+        [fieldName]: languagesArray,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [fieldName]: Array.isArray(value) ? value : [value],
+      });
+    }
   };
 
   const handleSubmit = async () => {
@@ -50,6 +71,7 @@ const AdminMovieDetails = () => {
       notification.success({
         message: "Cập nhật thông tin phim thành công!",
       });
+      navigate("/adm-list");
     } catch (error) {
       console.log("Update Failed:", error);
       notification.error({ message: "Cập nhật thông tin phim thất bại!" });
@@ -59,7 +81,9 @@ const AdminMovieDetails = () => {
   if (loading) {
     return <p>Loading...</p>;
   }
-
+  const handleBack = () => {
+    navigate("/adm-list");
+  };
   return (
     <CRow className="flex items-center justify-center min-h-[100vh]">
       <CCol className="m-6 w-2/3">
@@ -68,12 +92,7 @@ const AdminMovieDetails = () => {
             Movie Details
           </CCardHeader>
           <CCardBody>
-            <Form
-              {...formItemLayout}
-              form={form}
-              onFinish={handleSubmit}
-              initialValues={formData}
-            >
+            <Form {...formItemLayout} form={form} onFinish={handleSubmit}>
               <Form.Item
                 label="Tên"
                 labelAlign="left"
@@ -98,8 +117,8 @@ const AdminMovieDetails = () => {
               >
                 <Input
                   placeholder="Nhập thể loại"
-                  value={formData.genre}
-                  onChange={(e) => handleInputChange("genre", e.target.value)}
+                  value={formData.genres}
+                  onChange={(e) => handleInputChange("genres", e.target.value)}
                   className="w-full px-3 py-2 border rounded"
                 />
               </Form.Item>
@@ -112,9 +131,9 @@ const AdminMovieDetails = () => {
               >
                 <Input
                   placeholder="Nhập ngôn ngữ phim"
-                  value={formData.language}
+                  value={formData.languages}
                   onChange={(e) =>
-                    handleInputChange("language", e.target.value)
+                    handleInputChange("languages", e.target.value)
                   }
                   className="w-full px-3 py-2 border rounded"
                 />
@@ -187,8 +206,8 @@ const AdminMovieDetails = () => {
               >
                 <Input
                   placeholder="Nhập điểm IMDB"
-                  value={formData.point}
-                  onChange={(e) => handleInputChange("point", e.target.value)}
+                  value={formData.imdbID}
+                  onChange={(e) => handleInputChange("imdbID", e.target.value)}
                   className="w-full px-3 py-2 border rounded"
                 />
               </Form.Item>
@@ -201,8 +220,10 @@ const AdminMovieDetails = () => {
               >
                 <Input
                   placeholder="Nhập mô tả của phim"
-                  value={formData.des}
-                  onChange={(e) => handleInputChange("des", e.target.value)}
+                  value={formData.description}
+                  onChange={(e) =>
+                    handleInputChange("description", e.target.value)
+                  }
                   className="w-full px-3 py-2 border rounded"
                 />
               </Form.Item>
@@ -221,8 +242,10 @@ const AdminMovieDetails = () => {
               >
                 <Input
                   placeholder="Nhập URL thumbnail"
-                  value={formData.thumb}
-                  onChange={(e) => handleInputChange("thumb", e.target.value)}
+                  value={formData.thumbnail}
+                  onChange={(e) =>
+                    handleInputChange("thumbnail", e.target.value)
+                  }
                   className="w-full px-3 py-2 border rounded"
                 />
               </Form.Item>
@@ -262,11 +285,18 @@ const AdminMovieDetails = () => {
               </Form.Item>
               <Button
                 type="primary"
-                block
+                danger
                 onClick={handleSubmit}
-                className="w-full px-4 bg-red-500 text-black mt-2 text-white"
+                className="w-full px-4 mt-2 text-white"
               >
                 Update
+              </Button>
+              <Button
+                danger
+                onClick={handleBack}
+                className="w-full px-4 mt-2 text-black"
+              >
+                Back
               </Button>
             </Form>
           </CCardBody>
