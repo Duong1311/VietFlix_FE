@@ -84,11 +84,11 @@ const UserMovieDetails = () => {
               </h1>
               <p className="text-[#e50914]">
                 <strong className="text-white">Thể loại:</strong>{" "}
-                {movieData.genres}
+                {movieData.genres && movieData.genres.join(", ")}
               </p>
               <p className="text-[#e50914]">
                 <strong className="text-white">Ngôn ngữ:</strong>{" "}
-                {movieData.languages}
+                {movieData.languages && movieData.languages.join(", ")}
               </p>
               <p className="text-[#e50914]">
                 <strong className="text-white">Năm phát hành:</strong>{" "}
