@@ -3,7 +3,7 @@ import { FaUserCircle } from "react-icons/fa";
 import { getUserInfo } from "../../services/User";
 
 const Profile = () => {
-  const userID = 2;
+  const userID = localStorage.getItem("member_id");
   const [user, setUser] = useState("");
   const [userName, setUserName] = useState("");
   const [userNewPass, setNewPass] = useState("");
@@ -14,6 +14,7 @@ const Profile = () => {
   const handleClick = () => {
     setActive(!active);
   };
+  const handleSubmit = () => {};
 
   const getInfo = async (userID) => {
     try {
@@ -51,14 +52,14 @@ const Profile = () => {
             <FaUserCircle className="w-24 h-24" />
           </div>
           <div className="ml-10">
-            <div className="text-2xl">{user.name}</div>
+            <div className="text-2xl">{user.member_name}</div>
             <div className="flex flex-row">
               <div>Mail:</div>
               <div className="text-red-600 ml-3"> {user.mail} </div>
             </div>
             <div className="flex flex-row">
               <div>Time:</div>
-              <div className="text-red-600 ml-3"> {user.expPackage} </div>
+              <div className="text-red-600 ml-3"> {user.exp_package} </div>
             </div>
           </div>
         </div>
@@ -76,45 +77,56 @@ const Profile = () => {
           </button>
         </div>
         {/* form */}
-        <form action="" className="flex flex-col w-[19em] mt-8">
-          <div>Insert password to continue</div>
-          <input
-            type="text"
-            className="w-full mt-3 rounded-md px-3 py-2 text-black"
-            onClick={(event) => setOldPass(event.target.value)}
-          />
-          <div className="flex justify-center items-center mt-8">
-            <button className="bg-[#E50914] rounded-3xl py-2 px-6">
-              <div>Continue</div>
-            </button>
+        {active && (
+          <div className="flex flex-col w-[19em] mt-8">
+            <div>Insert password to continue</div>
+            <input
+              type="text"
+              className="w-full mt-3 rounded-md px-3 py-2 text-black"
+              onChange={(event) => setOldPass(event.target.value)}
+              value={userOldPass}
+            />
+            <div className="flex justify-center items-center mt-8">
+              <button className="bg-[#E50914] rounded-3xl py-2 px-6">
+                <div>Continue</div>
+              </button>
+            </div>
           </div>
-        </form>
+        )}
 
-        <form action="" className="flex flex-col w-[19em] mt-5">
-          <div className="mt-3">UserName</div>
-          <input
-            type="text"
-            className="w-full mt-3 rounded-md px-3 py-2 text-black"
-            onClick={(event) => setUserName(event.target.value)}
-          />
-          <div className="mt-3">New Password</div>
-          <input
-            type="text"
-            className="w-full mt-3 rounded-md px-3 py-2 text-black"
-            onClick={(event) => setNewPass(event.target.value)}
-          />
-          <div className="mt-3">Confirm Password</div>
-          <input
-            type="text"
-            className="w-full mt-3 rounded-md px-3 py-2 text-black"
-            onClick={(event) => setConfPass(event.target.value)}
-          />
-          <div className="flex justify-center items-center mt-8">
-            <button className="bg-[#E50914] rounded-3xl py-2 px-6">
-              <div>Continue</div>
-            </button>
+        {active && (
+          <div className="flex flex-col w-[19em] mt-5">
+            <div className="mt-3">UserName</div>
+            <input
+              type="text"
+              className="w-full mt-3 rounded-md px-3 py-2 text-black"
+              value={userName}
+              onChange={(event) => setUserName(event.target.value)}
+            />
+            <div className="mt-3">New Password</div>
+            <input
+              type="text"
+              className="w-full mt-3 rounded-md px-3 py-2 text-black"
+              value={userNewPass}
+              onChange={(event) => setNewPass(event.target.value)}
+            />
+            <div className="mt-3">Confirm Password</div>
+            <input
+              type="text"
+              className="w-full mt-3 rounded-md px-3 py-2 text-black"
+              value={userConfPass}
+              onChange={(event) => setConfPass(event.target.value)}
+            />
+            <div className="flex justify-center items-center mt-8">
+              <button
+                onClick={handleSubmit}
+                className="bg-[#E50914] rounded-3xl py-2 px-6"
+              >
+                <div>Continue</div>
+              </button>
+            </div>
           </div>
-        </form>
+        )}
       </div>
     </div>
   );

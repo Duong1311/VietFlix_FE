@@ -3,14 +3,46 @@ import { FaArrowRightLong } from "react-icons/fa6";
 
 import Register from "../Register/Register";
 import { useState } from "react";
+import { getUserLogin } from "../../services/User";
+import { useNavigate } from "react-router-dom";
 
 // eslint-disable-next-line react/prop-types
-const Login = ({ visible, onClose }) => {
+const Login = ({ visible, onClose, login }) => {
   const [showRegister, setShowRegister] = useState(false);
+
+  const [email, setEmail] = useState("");
+  const [pass, setPasword] = useState("");
+  const navigate = useNavigate();
+
   const handleOnClode = () => {
     setShowRegister(false);
   };
   if (!visible) return null;
+  // console.log(email, pass);
+
+  const handleLogin = async () => {
+    // console.log(email, pass);
+    try {
+      if (email === "admin" && pass === "admin") {
+        login();
+        onClose();
+        navigate("/profile");
+      } else {
+        const res = await getUserLogin(email, pass);
+        console.log(res.data);
+        if (res.data != "") {
+          localStorage.setItem("member_id", res.data.member_id);
+          localStorage.setItem("isLogin", true);
+          localStorage.setItem("member_name", res.data.member_name);
+
+          login();
+          onClose();
+        }
+      }
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
   return (
     <div className="fixed inset-0 bg-opacity-30 backdrop-blur-sm flex justify-center items-center z-10">
       <div className="bg-black w-[500px] rounded-3xl border border-white  flex justify-center items-center">
@@ -33,6 +65,10 @@ const Login = ({ visible, onClose }) => {
               placeholder="email"
               type="email"
               name="email"
+              value={email}
+              onChange={(event) => {
+                setEmail(event.target.value);
+              }}
             />
             <p className="mt-2 invisible peer-invalid:visible text-pink-600 text-xs">
               Please provide a valid email address.
@@ -48,10 +84,17 @@ const Login = ({ visible, onClose }) => {
               placeholder="password"
               type="password"
               name="email"
+              value={pass}
+              onChange={(event) => {
+                setPasword(event.target.value);
+              }}
             />
           </label>
           <div className="flex items-center bg-[#E50914] h-[37px] mt-8  text-white cursor-pointer hover:bg-red-700 font-semibold rounded-md px-4 py-1">
-            <div className="flex text-sm justify-center items-center w-full">
+            <div
+              className="flex text-sm justify-center items-center w-full"
+              onClick={handleLogin}
+            >
               Login
             </div>
           </div>

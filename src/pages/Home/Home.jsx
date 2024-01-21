@@ -27,6 +27,7 @@ const Home = () => {
   const [language, setLanguage] = useState("All");
   const [year, setYear] = useState("All");
 
+  console.log(name);
   const navigate = useNavigate();
   const handleSubmit = () => {
     const searchParams = {

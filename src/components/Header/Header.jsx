@@ -1,17 +1,26 @@
-import { useContext, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import Login from "../../pages/Login/Login";
-import { AppContext } from "../../context/AppContext";
+// import { AppContext } from "../../context/AppContext";
 import { Link, useNavigate } from "react-router-dom";
+import { FaUserCircle } from "react-icons/fa";
+import Menu from "../Menu/Menu";
 
 export default function Header() {
   const [showLogin, setShowLogin] = useState(false);
+  const [showMenu, setShowMenu] = useState(false);
+  const [isLogin, setLogin] = useState(false);
+  // const { valueQuery, setValueQuery } = useContext(AppContext);
+  var member_name = localStorage.getItem("member_name");
 
-  const { valueQuery, setValueQuery } = useContext(AppContext);
+  // setLogin(login);
+
   const handleOnClode = () => {
     setShowLogin(false);
+    setShowMenu(false);
   };
+  // localStorage.setItem("name", "Bepatient");
 
-  const [updated, setUpdated] = useState("");
+  // const [updated, setUpdated] = useState("");
   const [message, setMessage] = useState("");
 
   const handleChange = (event) => {
@@ -21,7 +30,7 @@ export default function Header() {
   const handleKeyDown = (event) => {
     if (event.key === "Enter") {
       // 👇 Get input value
-      setUpdated(message);
+      // setUpdated(message);
       getSearchMovie(message);
     }
   };
@@ -37,7 +46,7 @@ export default function Header() {
 
   return (
     <div>
-      <div className="w-full h-[60px] bg-black flex justify-center items-center ">
+      <div className="w-full h-[60px] bg-black flex flex-row justify-center items-center ">
         <div className=" w-5/6  flex justify-between flex-row items-center">
           <Link to="/">
             <div className="flex cursor-pointer">
@@ -86,7 +95,7 @@ export default function Header() {
             />
           </div>
           <div className=" flex flex-row text-white">
-            <div className="mr-3 flex">
+            <div className="mr-3 flex flex-row justify-center items-center">
               <div className="self-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -101,17 +110,46 @@ export default function Header() {
               </div>
               <div className="leading-6">Home</div>
             </div>
-            <div
-              className="underline"
-              onClick={() => {
-                setShowLogin(true);
-              }}
-            >
-              Đăng Nhập
-            </div>
+
+            {!isLogin ? (
+              <div
+                className="underline"
+                onClick={() => {
+                  setShowLogin(!showLogin);
+                }}
+              >
+                Đăng Nhập
+              </div>
+            ) : (
+              <div className="flex flex-row justify-center items-center ">
+                <div
+                  className="self-center mr-2 relative"
+                  onClick={() => {
+                    setShowMenu(!showMenu);
+                  }}
+                >
+                  <FaUserCircle className="w-8 h-8" />
+                  <div className="absolute top-[50px] left-0">
+                    <Menu
+                      login={() => {
+                        setLogin(!isLogin);
+                      }}
+                      status={showMenu}
+                    />
+                  </div>
+                </div>
+                <div>{member_name}</div>
+              </div>
+            )}
           </div>
         </div>
-        <Login onClose={handleOnClode} visible={showLogin} />
+        <Login
+          onClose={handleOnClode}
+          visible={showLogin}
+          login={() => {
+            setLogin(true);
+          }}
+        />
       </div>
     </div>
   );
