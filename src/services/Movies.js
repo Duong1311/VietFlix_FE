@@ -14,4 +14,37 @@ const getFilterMovies = (message) => {
   return axios.get(api);
 };
 
-export { getListMovies, getSearch, getFilterMovies };
+const getUserMovieDetailByID = (id) => {
+  const api = `/movies/viewMovieInfo/${id}`;
+  return axios.get(api);
+};
+
+//Admin service
+const addMovie = (movieData) => {
+  return axios.post("/admin/add", movieData);
+};
+
+const deleteMovie = (id) => {
+  const api = `admin/delete/${id}`;
+  return axios.post(api);
+};
+
+const getAdminMovieDetailByID = (id) => {
+  const api = `/admin/viewMovieInfo/${id}`;
+  return axios.get(api);
+};
+
+const updateMovie = (movieData) => {
+  return axios.post("/admin/update", movieData);
+};
+
+export {
+  getListMovies,
+  getSearch,
+  getFilterMovies,
+  addMovie,
+  deleteMovie,
+  getAdminMovieDetailByID,
+  updateMovie,
+  getUserMovieDetailByID,
+};

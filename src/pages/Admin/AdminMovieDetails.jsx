@@ -1,7 +1,9 @@
-import { useState } from "react";
-import { CCol, CRow, CCard, CCardBody, CCardHeader } from "@coreui/react";
-import { Form, Input, Button } from "antd";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { CRow, CCol, CCard, CCardBody, CCardHeader } from "@coreui/react";
+import { Form, Input, Button, notification } from "antd";
 import { useForm } from "antd/lib/form/Form";
+import { getAdminMovieDetailByID, updateMovie } from "../../services/Movies";
 
 const formItemLayout = {
   labelCol: {
@@ -14,27 +16,26 @@ const formItemLayout = {
   },
 };
 
-const movieData = {
-  name: "Bí Mật Của Hạnh Phúc",
-  genre: "Hài hước",
-  language: "Tiếng Việt",
-  year: "2023",
-  actor: "Nguyễn Văn A, Trần Thị B",
-  director: "Lê Văn C",
-  length: "120 phút",
-  point: "8.5",
-  des: "Bộ phim xoay quanh câu chuyện về hành trình tìm kiếm hạnh phúc của nhóm bạn thân. Những tình huống dở khóc dở cười sẽ khiến khán giả không ngừng cười.",
-  thumb:
-    "https://uploads.nguoidothi.net.vn/content/f29d9806-6f25-41c0-bcf8-4095317e3497.jpg",
-  trailer:
-    "https://www.youtube.com/watch?v=TcMBFSGVi1c&ab_channel=MarvelEntertainment",
-  source:
-    "https://www.youtube.com/watch?v=SyE0usBjJDk&ab_channel=TungJohnPlayingChess",
-};
-
 const AdminMovieDetails = () => {
+  const { id } = useParams();
   const [form] = useForm();
-  const [formData, setFormData] = useState({ ...movieData });
+  const [formData, setFormData] = useState({});
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchMovieDetail = async () => {
+      try {
+        const response = await getAdminMovieDetailByID(id);
+        setFormData(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.log(error.message);
+        notification.error({ message: "Failed to fetch movie details" });
+      }
+    };
+
+    fetchMovieDetail();
+  }, [id]);
 
   const handleInputChange = (fieldName, value) => {
     setFormData({
@@ -43,21 +44,25 @@ const AdminMovieDetails = () => {
     });
   };
 
-  const handleSubmit = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        setFormData(values);
-        console.log("Updated Form Data:", values);
-      })
-      .catch((errorInfo) => {
-        console.log("Validation Failed:", errorInfo);
+  const handleSubmit = async () => {
+    try {
+      await updateMovie(formData);
+      notification.success({
+        message: "Cập nhật thông tin phim thành công!",
       });
+    } catch (error) {
+      console.log("Update Failed:", error);
+      notification.error({ message: "Cập nhật thông tin phim thất bại!" });
+    }
   };
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
 
   return (
     <CRow className="flex items-center justify-center min-h-[100vh]">
-      <CCol className="m-6 w-1/2">
+      <CCol className="m-6 w-2/3">
         <CCard>
           <CCardHeader className="flex justify-center text-3xl items-center mb-8">
             Movie Details
@@ -87,7 +92,7 @@ const AdminMovieDetails = () => {
               <Form.Item
                 label="Thể loại"
                 labelAlign="left"
-                name="genre"
+                name="genres"
                 rules={[{ required: true, message: "Không được bỏ trống!" }]}
                 className="mb-2"
               >
@@ -101,7 +106,7 @@ const AdminMovieDetails = () => {
               <Form.Item
                 label="Ngôn ngữ"
                 labelAlign="left"
-                name="language"
+                name="languages"
                 rules={[{ required: true, message: "Không được bỏ trống!" }]}
                 className="mb-2"
               >
@@ -176,14 +181,8 @@ const AdminMovieDetails = () => {
               <Form.Item
                 label="IMDB"
                 labelAlign="left"
-                name="point"
-                rules={[
-                  { required: true, message: "Không được bỏ trống!" },
-                  {
-                    type: "url",
-                    message: "Vui lòng nhập đúng định dạng URL",
-                  },
-                ]}
+                name="imdbID"
+                rules={[{ required: true, message: "Không được bỏ trống!" }]}
                 className="mb-2"
               >
                 <Input
@@ -196,7 +195,7 @@ const AdminMovieDetails = () => {
               <Form.Item
                 label="Mô tả"
                 labelAlign="left"
-                name="des"
+                name="description"
                 rules={[{ required: true, message: "Không được bỏ trống!" }]}
                 className="mb-2"
               >
@@ -210,7 +209,7 @@ const AdminMovieDetails = () => {
               <Form.Item
                 label="Thumbnail"
                 labelAlign="left"
-                name="thumb"
+                name="thumbnail"
                 rules={[
                   { required: true, message: "Không được bỏ trống!" },
                   {
@@ -247,10 +246,10 @@ const AdminMovieDetails = () => {
                 name="source"
                 rules={[
                   { required: true, message: "Không được bỏ trống!" },
-                  {
-                    type: "url",
-                    message: "Vui lòng nhập đúng định dạng URL",
-                  },
+                  // {
+                  //   type: "url",
+                  //   message: "Vui lòng nhập đúng định dạng URL",
+                  // },
                 ]}
                 className="mb-2"
               >

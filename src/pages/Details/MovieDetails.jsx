@@ -1,30 +1,32 @@
 /* eslint-disable no-useless-escape */
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { getUserMovieDetailByID } from "../../services/Movies";
+import { notification } from "antd";
+import Artplayer from "./ArtPlayer.jsx";
 
 const UserMovieDetails = () => {
   const [showVideo, setShowVideo] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
+  const { id } = useParams();
+  const [movieData, setMovieData] = useState({});
 
-  const movieData = {
-    name: "Bí Mật Của Hạnh Phúc",
-    genre: "Hài hước",
-    language: "Tiếng Việt",
-    year: "2023",
-    actor: "Nguyễn Văn A, Trần Thị B",
-    director: "Lê Văn C",
-    length: "120 phút",
-    point: "8.5",
-    des: "Bộ phim xoay quanh câu chuyện về hành trình tìm kiếm hạnh phúc của nhóm bạn thân. Những tình huống dở khóc dở cười sẽ khiến khán giả không ngừng cười.",
-    thumb:
-      "https://uploads.nguoidothi.net.vn/content/f29d9806-6f25-41c0-bcf8-4095317e3497.jpg",
-    trailer:
-      "https://www.youtube.com/watch?v=TcMBFSGVi1c&ab_channel=MarvelEntertainment",
-    source:
-      "https://www.youtube.com/watch?v=SyE0usBjJDk&ab_channel=TungJohnPlayingChess",
-  };
+  useEffect(() => {
+    const fetchMovieDetail = async () => {
+      try {
+        const response = await getUserMovieDetailByID(id);
+        setMovieData(response.data);
+      } catch (error) {
+        console.log(error.message);
+        notification.error({ message: "Failed to fetch movie details" });
+      }
+    };
 
-  const videoId = getYouTubeVideoId(movieData.source);
-  const trailerId = getYouTubeVideoId(movieData.trailer);
+    fetchMovieDetail();
+  }, [id]);
+
+  // const videoId = getYouTubeVideoId(movieData?.source || "");
+  const trailerId = getYouTubeVideoId(movieData?.trailer || "");
   const [watchButtonState, setWatchButtonState] = useState({
     active: false,
     color: "#17161b",
@@ -70,7 +72,7 @@ const UserMovieDetails = () => {
         <div className="flex gap-4">
           <div className="flex-none">
             <img
-              src={movieData.thumb}
+              src={movieData.thumbnail}
               alt="Ảnh bìa"
               className="w-60 h-70 object-cover object-center rounded-lg"
             />
@@ -82,11 +84,11 @@ const UserMovieDetails = () => {
               </h1>
               <p className="text-[#e50914]">
                 <strong className="text-white">Thể loại:</strong>{" "}
-                {movieData.genre}
+                {movieData.genres}
               </p>
               <p className="text-[#e50914]">
                 <strong className="text-white">Ngôn ngữ:</strong>{" "}
-                {movieData.language}
+                {movieData.languages}
               </p>
               <p className="text-[#e50914]">
                 <strong className="text-white">Năm phát hành:</strong>{" "}
@@ -106,7 +108,7 @@ const UserMovieDetails = () => {
               </p>
               <p className="text-[#e50914]">
                 <strong className="text-white">Điểm đánh giá:</strong>{" "}
-                {movieData.point}
+                {movieData.imdbID}
               </p>
             </div>
 
@@ -175,10 +177,10 @@ const UserMovieDetails = () => {
 
         <div className="flex flex-col my-4">
           <strong className="text-2xl text-white">Mô tả:</strong>
-          <p className="text-white mt-2">{movieData.des}</p>
+          <p className="text-white mt-2">{movieData.description}</p>
         </div>
       </div>
-      {showVideo && (
+      {/* {showVideo && (
         <div className="mt-4 flex mt-4 justify-center">
           <div
             style={{
@@ -203,6 +205,54 @@ const UserMovieDetails = () => {
               }}
             ></iframe>
           </div>
+        </div>
+      )} */}
+      {/* {showVideo && (
+        <div className="mt-4 flex mt-4 justify-center">
+          <iframe
+            title="Video Player"
+            width="100%"
+            height="500"
+            src={movieData.source}
+            allowFullScreen
+          ></iframe>
+        </div>
+      )} */}
+      {showVideo && (
+        <div className="mt-4 flex mt-4 justify-center">
+          {/* <ArtPlayer
+            src={movieData.source}
+            title={movieData.name}
+            cover={movieData.thumbnail}
+            ref={playerRef}
+          /> */}
+          {/* <Artplayer
+            option={{
+              url: "https://artplayer.org/assets/sample/video.mp4",
+              autoPlayBack: "true",
+            }}
+            style={{
+              width: "600px",
+              height: "400px",
+              margin: "60px auto 0",
+            }}
+            getInstance={(art) => console.info(art)}
+          /> */}
+          <Artplayer
+            option={{
+              container: ".artplayer-app",
+              url: "https://artplayer.org/assets/sample/video.mp4",
+              poster: "/assets/sample/poster.jpg",
+              volume: 0.5,
+              // ... thêm tất cả các cấu hình khác của bạn
+            }}
+            style={{
+              width: "600px",
+              height: "400px",
+              margin: "60px auto 0",
+            }}
+            getInstance={(art) => console.info(art)}
+          />
         </div>
       )}
 
