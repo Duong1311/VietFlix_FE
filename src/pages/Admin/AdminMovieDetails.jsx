@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { CCol, CRow, CCard, CCardBody, CCardHeader } from "@coreui/react";
 import { Form, Input, Button } from "antd";
 import { useForm } from "antd/lib/form/Form";
