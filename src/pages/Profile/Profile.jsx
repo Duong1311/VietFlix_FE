@@ -137,6 +137,7 @@ const Profile = () => {
       const res = await payPackage(paymentInfo);
       console.log(res.data);
       setIsPopupOpen(false);
+      window.location.reload();
     } catch (error) {
       console.log(error.message);
     }
