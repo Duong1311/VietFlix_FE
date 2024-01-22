@@ -1,5 +1,6 @@
 import { CiLock } from "react-icons/ci";
 import { FaArrowRightLong } from "react-icons/fa6";
+import { notification } from "antd";
 
 import Register from "../Register/Register";
 import { useState } from "react";
@@ -24,9 +25,12 @@ const Login = ({ visible, onClose, login }) => {
     // console.log(email, pass);
     try {
       if (email === "admin@gmail.com" && pass === "admin") {
-        localStorage.setItem("member_id", 1);
+        localStorage.setItem("member_id", 100);
         localStorage.setItem("isLogin", true);
         localStorage.setItem("member_name", "Admin");
+        notification.success({
+          message: "Đăng nhập thành công!",
+        });
         login();
         onClose();
         navigate("/adm-list");
@@ -42,8 +46,10 @@ const Login = ({ visible, onClose, login }) => {
           onClose();
         }
       }
+      location.reload();
     } catch (error) {
       console.log(error.message);
+      notification.error({ message: "Đăng nhập thất bại!" });
     }
   };
   return (

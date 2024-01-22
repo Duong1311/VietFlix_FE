@@ -68,9 +68,41 @@ const Home = () => {
   //   },
   // ];
 
-  const genres = ["Action", "Horror"];
+  const genres = [
+    "Action",
+    "Horror",
+    "Comedy",
+    "Romance",
+    "Science fiction",
+    "Adventure",
+    "Psychological",
+    "Crime",
+    "Mythology",
+    "Documentary",
+    "Animation",
+    "Musical",
+    "War",
+    "Western",
+    "Drama",
+    "Fantasy",
+  ];
 
-  const languages = ["English", "VietNam"];
+  const languages = [
+    "Vietnamese",
+    "English",
+    "Chinese",
+    "Japanese",
+    "Korean",
+    "French",
+    "Spanish",
+    "German",
+    "Italian",
+    "Arabic",
+    "Portuguese",
+    "Hindi",
+    "Bengali",
+    "Tamil",
+  ];
 
   const years = ["2010", "2011", "2012", "2013", "2014", "2015"];
 
