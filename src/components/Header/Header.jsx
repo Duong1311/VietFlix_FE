@@ -1,4 +1,4 @@
-import { useContext, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import Login from "../../pages/Login/Login";
 // import { AppContext } from "../../context/AppContext";
 import { Link, useNavigate } from "react-router-dom";
@@ -135,7 +135,7 @@ export default function Header() {
                   }}
                 >
                   <FaUserCircle className="w-8 h-8" />
-                  <div className="absolute top-[50px] left-0">
+                  <div className="absolute top-[45px] left-0 z-50">
                     <Menu
                       login={() => {
                         setLogin(!isLogin);
