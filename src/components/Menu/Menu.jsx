@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 const Menu = ({ status, login }) => {
   if (!status) return null;
   return (
-    <div className="text-black flex flex-col justify-center items-center  w-[8rem] h-[7rem] bg-white underline">
+    <div className="text-black flex flex-col justify-center items-center  w-[8rem] h-[7rem] bg-white underline rounded-md">
       <div>
         <Link to="/profile">
           <div>Hồ sơ</div>

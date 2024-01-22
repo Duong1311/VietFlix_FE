@@ -25,7 +25,7 @@ const AdminMovieDetails = () => {
   const navigate = useNavigate();
   useEffect(() => {
     form.setFieldsValue(formData);
-  }, [formData]);
+  }, [form, formData]);
 
   useEffect(() => {
     const fetchMovieDetail = async () => {

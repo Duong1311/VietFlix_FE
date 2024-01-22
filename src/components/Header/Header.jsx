@@ -119,7 +119,7 @@ export default function Header() {
 
             {!isLogin ? (
               <div
-                className="underline"
+                className="underline cursor-pointer"
                 onClick={() => {
                   setShowLogin(!showLogin);
                 }}
@@ -129,7 +129,7 @@ export default function Header() {
             ) : (
               <div className="flex flex-row justify-center items-center ">
                 <div
-                  className="self-center mr-2 relative"
+                  className="self-center mr-2 relative cursor-pointer"
                   onClick={() => {
                     setShowMenu(!showMenu);
                   }}
