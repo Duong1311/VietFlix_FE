@@ -15,15 +15,16 @@ const Menu = ({ status, login }) => {
         <Link to="/history">
           <div>Lịch sử</div>
         </Link>
-
-        <div
-          onClick={() => {
-            localStorage.clear();
-            login();
-          }}
-        >
-          Đăng xuất
-        </div>
+        <Link to="/">
+          <div
+            onClick={() => {
+              localStorage.clear();
+              login();
+            }}
+          >
+            Đăng xuất
+          </div>
+        </Link>
       </div>
     </div>
   );

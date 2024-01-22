@@ -9,9 +9,15 @@ export default function Header() {
   const [showLogin, setShowLogin] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
   const [isLogin, setLogin] = useState(false);
-  // const { valueQuery, setValueQuery } = useContext(AppContext);
-  var member_name = localStorage.getItem("member_name");
+  const [member_name, setName] = useState("");
 
+  // const { valueQuery, setValueQuery } = useContext(AppContext);
+  useEffect(() => {
+    const name = localStorage.getItem("member_name");
+    setName(name);
+    const login = localStorage.getItem("isLogin");
+    setLogin(login);
+  }, []);
   // setLogin(login);
 
   const handleOnClode = () => {
