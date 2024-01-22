@@ -19,6 +19,10 @@ const setUserInfo = (info) => {
   return axios.post(api, info);
 };
 
+const isLoggedIn = () => {
+  return localStorage.getItem("isLogin") === "true";
+};
+
 //Package
 
 const getListPackage = () => {
@@ -30,6 +34,11 @@ const payPackage = (paymentInfo) => {
   return axios.post(api, paymentInfo);
 };
 
+const checkBoughtPackage = (member_id) => {
+  const api = `members/checkBoughtPackage/${member_id}`;
+  return axios.get(api);
+};
+
 export {
   getUserInfo,
   getUserLogin,
@@ -37,4 +46,6 @@ export {
   setUserInfo,
   getListPackage,
   payPackage,
+  checkBoughtPackage,
+  isLoggedIn,
 };

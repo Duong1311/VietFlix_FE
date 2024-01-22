@@ -4,6 +4,7 @@ import { useParams } from "react-router-dom";
 import { getUserMovieDetailByID } from "../../services/Movies";
 import { notification } from "antd";
 import Artplayer from "./ArtPlayer.jsx";
+import { isLoggedIn } from "../../services/User.js";
 
 const UserMovieDetails = () => {
   const [showVideo, setShowVideo] = useState(false);
@@ -39,17 +40,24 @@ const UserMovieDetails = () => {
   });
 
   const handleWatchButtonClick = () => {
-    setShowVideo(true);
-    setShowTrailer(false);
-    setWatchButtonState({
-      active: true,
-      color: "#e50914",
-      svgColor: "white",
-    });
-    setTrailerButtonState({
-      active: false,
-      color: "#17161b",
-    });
+    if (isLoggedIn()) {
+      setShowVideo(true);
+      setShowTrailer(false);
+      setWatchButtonState({
+        active: true,
+        color: "#e50914",
+        svgColor: "white",
+      });
+      setTrailerButtonState({
+        active: false,
+        color: "#17161b",
+      });
+    } else {
+      notification.warning({
+        message: "Yêu cầu đăng nhập",
+        description: "Vui lòng đăng nhập để xem phim.",
+      });
+    }
   };
 
   const handleTrailerButtonClick = () => {
@@ -198,7 +206,6 @@ const UserMovieDetails = () => {
               loop: true,
               playbackRate: true,
               fullscreen: true,
-              // subtitleOffset: true,
               miniProgressBar: true,
               mutex: true,
               backdrop: true,
@@ -218,15 +225,6 @@ const UserMovieDetails = () => {
                   url: "/assets/sample/video.mp4",
                 },
               ],
-              // subtitle: {
-              //   url: "/assets/sample/subtitle.srt",
-              //   type: "srt",
-              //   style: {
-              //     color: "#fe9200",
-              //     fontSize: "20px",
-              //   },
-              //   encoding: "utf-8",
-              // },
               icons: {
                 loading: '<img src="/assets/Spinner-1s-200px.gif">',
               },
