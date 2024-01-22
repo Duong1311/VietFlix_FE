@@ -23,10 +23,13 @@ const Login = ({ visible, onClose, login }) => {
   const handleLogin = async () => {
     // console.log(email, pass);
     try {
-      if (email === "admin" && pass === "admin") {
+      if (email === "admin@gmail.com" && pass === "admin") {
+        localStorage.setItem("member_id", 1);
+        localStorage.setItem("isLogin", true);
+        localStorage.setItem("member_name", "Admin");
         login();
         onClose();
-        navigate("/profile");
+        navigate("/adm-list");
       } else {
         const res = await getUserLogin(email, pass);
         console.log(res.data);
