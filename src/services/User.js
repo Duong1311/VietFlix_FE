@@ -25,4 +25,16 @@ const getListPackage = () => {
   return axios.get("package/viewAllPackage");
 };
 
-export { getUserInfo, getUserLogin, getUserPass, setUserInfo, getListPackage };
+const payPackage = (paymentInfo) => {
+  const api = "package/pay";
+  return axios.post(api, paymentInfo);
+};
+
+export {
+  getUserInfo,
+  getUserLogin,
+  getUserPass,
+  setUserInfo,
+  getListPackage,
+  payPackage,
+};
