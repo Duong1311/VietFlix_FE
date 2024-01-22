@@ -1,30 +1,32 @@
 /* eslint-disable no-useless-escape */
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { getUserMovieDetailByID } from "../../services/Movies";
+import { notification } from "antd";
+import Artplayer from "./ArtPlayer.jsx";
 
 const UserMovieDetails = () => {
   const [showVideo, setShowVideo] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
+  const { id } = useParams();
+  const [movieData, setMovieData] = useState({});
 
-  const movieData = {
-    name: "Bí Mật Của Hạnh Phúc",
-    genre: "Hài hước",
-    language: "Tiếng Việt",
-    year: "2023",
-    actor: "Nguyễn Văn A, Trần Thị B",
-    director: "Lê Văn C",
-    length: "120 phút",
-    point: "8.5",
-    des: "Bộ phim xoay quanh câu chuyện về hành trình tìm kiếm hạnh phúc của nhóm bạn thân. Những tình huống dở khóc dở cười sẽ khiến khán giả không ngừng cười.",
-    thumb:
-      "https://uploads.nguoidothi.net.vn/content/f29d9806-6f25-41c0-bcf8-4095317e3497.jpg",
-    trailer:
-      "https://www.youtube.com/watch?v=TcMBFSGVi1c&ab_channel=MarvelEntertainment",
-    source:
-      "https://www.youtube.com/watch?v=SyE0usBjJDk&ab_channel=TungJohnPlayingChess",
-  };
+  useEffect(() => {
+    const fetchMovieDetail = async () => {
+      try {
+        const response = await getUserMovieDetailByID(id);
+        setMovieData(response.data);
+      } catch (error) {
+        console.log(error.message);
+        notification.error({ message: "Failed to fetch movie details" });
+      }
+    };
 
-  const videoId = getYouTubeVideoId(movieData.source);
-  const trailerId = getYouTubeVideoId(movieData.trailer);
+    fetchMovieDetail();
+  }, [id]);
+
+  // const videoId = getYouTubeVideoId(movieData?.source || "");
+  const trailerId = getYouTubeVideoId(movieData?.trailer || "");
   const [watchButtonState, setWatchButtonState] = useState({
     active: false,
     color: "#17161b",
@@ -70,7 +72,7 @@ const UserMovieDetails = () => {
         <div className="flex gap-4">
           <div className="flex-none">
             <img
-              src={movieData.thumb}
+              src={movieData.thumbnail}
               alt="Ảnh bìa"
               className="w-60 h-70 object-cover object-center rounded-lg"
             />
@@ -82,11 +84,11 @@ const UserMovieDetails = () => {
               </h1>
               <p className="text-[#e50914]">
                 <strong className="text-white">Thể loại:</strong>{" "}
-                {movieData.genre}
+                {movieData.genres && movieData.genres.join(", ")}
               </p>
               <p className="text-[#e50914]">
                 <strong className="text-white">Ngôn ngữ:</strong>{" "}
-                {movieData.language}
+                {movieData.languages && movieData.languages.join(", ")}
               </p>
               <p className="text-[#e50914]">
                 <strong className="text-white">Năm phát hành:</strong>{" "}
@@ -106,7 +108,7 @@ const UserMovieDetails = () => {
               </p>
               <p className="text-[#e50914]">
                 <strong className="text-white">Điểm đánh giá:</strong>{" "}
-                {movieData.point}
+                {movieData.imdbID}
               </p>
             </div>
 
@@ -175,34 +177,67 @@ const UserMovieDetails = () => {
 
         <div className="flex flex-col my-4">
           <strong className="text-2xl text-white">Mô tả:</strong>
-          <p className="text-white mt-2">{movieData.des}</p>
+          <p className="text-white mt-2">{movieData.description}</p>
         </div>
       </div>
+
       {showVideo && (
         <div className="mt-4 flex mt-4 justify-center">
-          <div
-            style={{
-              position: "relative",
-              width: "100%",
-              paddingTop: "56.25%",
+          <Artplayer
+            option={{
+              container: ".artplayer-app",
+              url: movieData.source,
+              volume: 0.5,
+              isLive: false,
+              muted: false,
+              autoplay: false,
+              pip: true,
+              autoSize: true,
+              autoMini: true,
+              setting: true,
+              loop: true,
+              playbackRate: true,
+              fullscreen: true,
+              // subtitleOffset: true,
+              miniProgressBar: true,
+              mutex: true,
+              backdrop: true,
+              playsInline: true,
+              autoPlayback: true,
+              airplay: true,
+              theme: "#e50914",
+              lang: navigator.language.toLowerCase(),
+              quality: [
+                {
+                  default: true,
+                  html: "SD 480P",
+                  url: "/assets/sample/video.mp4",
+                },
+                {
+                  html: "HD 720P",
+                  url: "/assets/sample/video.mp4",
+                },
+              ],
+              // subtitle: {
+              //   url: "/assets/sample/subtitle.srt",
+              //   type: "srt",
+              //   style: {
+              //     color: "#fe9200",
+              //     fontSize: "20px",
+              //   },
+              //   encoding: "utf-8",
+              // },
+              icons: {
+                loading: '<img src="/assets/Spinner-1s-200px.gif">',
+              },
             }}
-          >
-            <iframe
-              width="100%"
-              height="100%"
-              src={`https://www.youtube.com/embed/${videoId}`}
-              title="YouTube video player"
-              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-              allowFullScreen
-              style={{
-                position: "absolute",
-                top: 0,
-                left: 0,
-                width: "100%",
-                height: "100%",
-              }}
-            ></iframe>
-          </div>
+            style={{
+              width: "600px",
+              height: "400px",
+              margin: "60px auto 0",
+            }}
+            getInstance={(art) => console.info(art)}
+          />
         </div>
       )}
 

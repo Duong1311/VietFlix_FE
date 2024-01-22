@@ -1,7 +1,10 @@
-import { useState } from "react";
-import { CCol, CRow, CCard, CCardBody, CCardHeader } from "@coreui/react";
-import { Form, Input, Button } from "antd";
+import { useState, useEffect } from "react";
+import { useParams } from "react-router-dom";
+import { CRow, CCol, CCard, CCardBody, CCardHeader } from "@coreui/react";
+import { Form, Input, Button, notification } from "antd";
 import { useForm } from "antd/lib/form/Form";
+import { getAdminMovieDetailByID, updateMovie } from "../../services/Movies";
+import { useNavigate } from "react-router-dom";
 
 const formItemLayout = {
   labelCol: {
@@ -14,61 +17,82 @@ const formItemLayout = {
   },
 };
 
-const movieData = {
-  name: "Bí Mật Của Hạnh Phúc",
-  genre: "Hài hước",
-  language: "Tiếng Việt",
-  year: "2023",
-  actor: "Nguyễn Văn A, Trần Thị B",
-  director: "Lê Văn C",
-  length: "120 phút",
-  point: "8.5",
-  des: "Bộ phim xoay quanh câu chuyện về hành trình tìm kiếm hạnh phúc của nhóm bạn thân. Những tình huống dở khóc dở cười sẽ khiến khán giả không ngừng cười.",
-  thumb:
-    "https://uploads.nguoidothi.net.vn/content/f29d9806-6f25-41c0-bcf8-4095317e3497.jpg",
-  trailer:
-    "https://www.youtube.com/watch?v=TcMBFSGVi1c&ab_channel=MarvelEntertainment",
-  source:
-    "https://www.youtube.com/watch?v=SyE0usBjJDk&ab_channel=TungJohnPlayingChess",
-};
-
 const AdminMovieDetails = () => {
+  const { id } = useParams();
   const [form] = useForm();
-  const [formData, setFormData] = useState({ ...movieData });
+  const [formData, setFormData] = useState({});
+  const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
+  useEffect(() => {
+    form.setFieldsValue(formData);
+  }, [formData]);
+
+  useEffect(() => {
+    const fetchMovieDetail = async () => {
+      try {
+        const response = await getAdminMovieDetailByID(id);
+        setFormData(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.log(error.message);
+        notification.error({ message: "Failed to fetch movie details" });
+      }
+    };
+
+    fetchMovieDetail();
+  }, [id]);
 
   const handleInputChange = (fieldName, value) => {
-    setFormData({
-      ...formData,
-      [fieldName]: value,
-    });
-  };
-
-  const handleSubmit = () => {
-    form
-      .validateFields()
-      .then((values) => {
-        setFormData(values);
-        console.log("Updated Form Data:", values);
-      })
-      .catch((errorInfo) => {
-        console.log("Validation Failed:", errorInfo);
+    if (fieldName === "genres") {
+      const genresArray = value.split(",").map((genre) => genre.trim());
+      setFormData({
+        ...formData,
+        [fieldName]: genresArray,
       });
+    } else if (fieldName === "languages") {
+      const languagesArray = value
+        .split(",")
+        .map((language) => language.trim());
+      setFormData({
+        ...formData,
+        [fieldName]: languagesArray,
+      });
+    } else {
+      setFormData({
+        ...formData,
+        [fieldName]: Array.isArray(value) ? value : [value],
+      });
+    }
   };
 
+  const handleSubmit = async () => {
+    try {
+      await updateMovie(formData);
+      notification.success({
+        message: "Cập nhật thông tin phim thành công!",
+      });
+      navigate("/adm-list");
+    } catch (error) {
+      console.log("Update Failed:", error);
+      notification.error({ message: "Cập nhật thông tin phim thất bại!" });
+    }
+  };
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+  const handleBack = () => {
+    navigate("/adm-list");
+  };
   return (
     <CRow className="flex items-center justify-center min-h-[100vh]">
-      <CCol className="m-6 w-1/2">
+      <CCol className="m-6 w-2/3">
         <CCard>
           <CCardHeader className="flex justify-center text-3xl items-center mb-8">
             Movie Details
           </CCardHeader>
           <CCardBody>
-            <Form
-              {...formItemLayout}
-              form={form}
-              onFinish={handleSubmit}
-              initialValues={formData}
-            >
+            <Form {...formItemLayout} form={form} onFinish={handleSubmit}>
               <Form.Item
                 label="Tên"
                 labelAlign="left"
@@ -87,29 +111,29 @@ const AdminMovieDetails = () => {
               <Form.Item
                 label="Thể loại"
                 labelAlign="left"
-                name="genre"
+                name="genres"
                 rules={[{ required: true, message: "Không được bỏ trống!" }]}
                 className="mb-2"
               >
                 <Input
                   placeholder="Nhập thể loại"
-                  value={formData.genre}
-                  onChange={(e) => handleInputChange("genre", e.target.value)}
+                  value={formData.genres}
+                  onChange={(e) => handleInputChange("genres", e.target.value)}
                   className="w-full px-3 py-2 border rounded"
                 />
               </Form.Item>
               <Form.Item
                 label="Ngôn ngữ"
                 labelAlign="left"
-                name="language"
+                name="languages"
                 rules={[{ required: true, message: "Không được bỏ trống!" }]}
                 className="mb-2"
               >
                 <Input
                   placeholder="Nhập ngôn ngữ phim"
-                  value={formData.language}
+                  value={formData.languages}
                   onChange={(e) =>
-                    handleInputChange("language", e.target.value)
+                    handleInputChange("languages", e.target.value)
                   }
                   className="w-full px-3 py-2 border rounded"
                 />
@@ -176,41 +200,37 @@ const AdminMovieDetails = () => {
               <Form.Item
                 label="IMDB"
                 labelAlign="left"
-                name="point"
-                rules={[
-                  { required: true, message: "Không được bỏ trống!" },
-                  {
-                    type: "url",
-                    message: "Vui lòng nhập đúng định dạng URL",
-                  },
-                ]}
+                name="imdbID"
+                rules={[{ required: true, message: "Không được bỏ trống!" }]}
                 className="mb-2"
               >
                 <Input
                   placeholder="Nhập điểm IMDB"
-                  value={formData.point}
-                  onChange={(e) => handleInputChange("point", e.target.value)}
+                  value={formData.imdbID}
+                  onChange={(e) => handleInputChange("imdbID", e.target.value)}
                   className="w-full px-3 py-2 border rounded"
                 />
               </Form.Item>
               <Form.Item
                 label="Mô tả"
                 labelAlign="left"
-                name="des"
+                name="description"
                 rules={[{ required: true, message: "Không được bỏ trống!" }]}
                 className="mb-2"
               >
                 <Input
                   placeholder="Nhập mô tả của phim"
-                  value={formData.des}
-                  onChange={(e) => handleInputChange("des", e.target.value)}
+                  value={formData.description}
+                  onChange={(e) =>
+                    handleInputChange("description", e.target.value)
+                  }
                   className="w-full px-3 py-2 border rounded"
                 />
               </Form.Item>
               <Form.Item
                 label="Thumbnail"
                 labelAlign="left"
-                name="thumb"
+                name="thumbnail"
                 rules={[
                   { required: true, message: "Không được bỏ trống!" },
                   {
@@ -222,8 +242,10 @@ const AdminMovieDetails = () => {
               >
                 <Input
                   placeholder="Nhập URL thumbnail"
-                  value={formData.thumb}
-                  onChange={(e) => handleInputChange("thumb", e.target.value)}
+                  value={formData.thumbnail}
+                  onChange={(e) =>
+                    handleInputChange("thumbnail", e.target.value)
+                  }
                   className="w-full px-3 py-2 border rounded"
                 />
               </Form.Item>
@@ -247,10 +269,10 @@ const AdminMovieDetails = () => {
                 name="source"
                 rules={[
                   { required: true, message: "Không được bỏ trống!" },
-                  {
-                    type: "url",
-                    message: "Vui lòng nhập đúng định dạng URL",
-                  },
+                  // {
+                  //   type: "url",
+                  //   message: "Vui lòng nhập đúng định dạng URL",
+                  // },
                 ]}
                 className="mb-2"
               >
@@ -263,11 +285,18 @@ const AdminMovieDetails = () => {
               </Form.Item>
               <Button
                 type="primary"
-                block
+                danger
                 onClick={handleSubmit}
-                className="w-full px-4 bg-red-500 text-black mt-2 text-white"
+                className="w-full px-4 mt-2 text-white"
               >
                 Update
+              </Button>
+              <Button
+                danger
+                onClick={handleBack}
+                className="w-full px-4 mt-2 text-black"
+              >
+                Back
               </Button>
             </Form>
           </CCardBody>
