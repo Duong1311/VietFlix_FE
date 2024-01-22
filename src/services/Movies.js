@@ -19,6 +19,10 @@ const getUserMovieDetailByID = (id) => {
   return axios.get(api);
 };
 
+const addFavMovie = (movieId, memberId) => {
+  const api = `movies/favourite/${movieId}-${memberId}`;
+  return axios.post(api);
+};
 //Admin service
 const addMovie = (movieData) => {
   return axios.post("/admin/add", movieData);
@@ -47,4 +51,5 @@ export {
   getAdminMovieDetailByID,
   updateMovie,
   getUserMovieDetailByID,
+  addFavMovie,
 };

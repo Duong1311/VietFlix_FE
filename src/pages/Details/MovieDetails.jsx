@@ -1,7 +1,7 @@
 /* eslint-disable no-useless-escape */
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getUserMovieDetailByID } from "../../services/Movies";
+import { getUserMovieDetailByID, addFavMovie } from "../../services/Movies";
 import { notification } from "antd";
 import Artplayer from "./ArtPlayer.jsx";
 import { isLoggedIn, checkBoughtPackage } from "../../services/User.js";
@@ -56,6 +56,11 @@ const UserMovieDetails = () => {
     color: "#17161b",
   });
 
+  const [favButtonState, setFavButtonState] = useState({
+    active: false,
+    color: "#17161b",
+  });
+
   const handleWatchButtonClick = () => {
     if (isLoggedIn()) {
       if (hasBoughtPackage) {
@@ -97,7 +102,37 @@ const UserMovieDetails = () => {
       svgColor: "#17161b",
     });
   };
-
+  const handleAddToFavorites = () => {
+    if (isLoggedIn()) {
+      const member_id = localStorage.getItem("member_id");
+      const movieId = movieData.id;
+      setFavButtonState({
+        active: true,
+        color: "#e50914",
+        svgColor: "white",
+      });
+      if (member_id && movieId) {
+        addFavMovie(movieId, member_id)
+          .then(() => {
+            notification.success({
+              message: "Thêm thành công",
+              description: "Phim đã được thêm vào danh sách ưa thích.",
+            });
+            console.log("Phim đã được thêm vào danh sách ưa thích");
+          })
+          .catch((error) => {
+            console.error("Lỗi khi thêm phim vào danh sách ưa thích", error);
+          });
+      } else {
+        console.error("Không thể lấy memberId hoặc movieId");
+      }
+    } else {
+      notification.warning({
+        message: "Yêu cầu đăng nhập",
+        description: "Vui lòng đăng nhập để thực hiện thao tác.",
+      });
+    }
+  };
   return (
     <div className="flex flex-col py-8 px-32 min-h-[100vh] bg-black">
       <div className="flex flex-col justify-center gap-2">
@@ -185,10 +220,19 @@ const UserMovieDetails = () => {
                   Xem trailer
                 </button>
 
-                <button className="flex bg-[#17161b] text-white px-4 py-2 rounded-full">
+                <button
+                  className="flex bg-[#17161b] text-white px-4 py-2 rounded-full"
+                  style={{
+                    backgroundColor: favButtonState.color,
+                    boxShadow: favButtonState.active
+                      ? "0 0 10px rgba(229, 9, 20, 1)"
+                      : "none",
+                  }}
+                  onClick={handleAddToFavorites}
+                >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    fill="none"
+                    fill={favButtonState.svgColor}
                     viewBox="0 0 24 24"
                     strokeWidth={1.5}
                     stroke="currentColor"
@@ -216,6 +260,7 @@ const UserMovieDetails = () => {
       {showVideo && (
         <div className="mt-4 flex mt-4 justify-center">
           <Artplayer
+            className="border-2"
             option={{
               container: ".artplayer-app",
               url: movieData.source,
@@ -242,11 +287,11 @@ const UserMovieDetails = () => {
                 {
                   default: true,
                   html: "SD 480P",
-                  url: "/assets/sample/video.mp4",
+                  url: movieData.source,
                 },
                 {
                   html: "HD 720P",
-                  url: "/assets/sample/video.mp4",
+                  url: movieData.source,
                 },
               ],
               icons: {
