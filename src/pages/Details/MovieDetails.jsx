@@ -4,13 +4,14 @@ import { useParams } from "react-router-dom";
 import { getUserMovieDetailByID } from "../../services/Movies";
 import { notification } from "antd";
 import Artplayer from "./ArtPlayer.jsx";
-import { isLoggedIn } from "../../services/User.js";
+import { isLoggedIn, checkBoughtPackage } from "../../services/User.js";
 
 const UserMovieDetails = () => {
   const [showVideo, setShowVideo] = useState(false);
   const [showTrailer, setShowTrailer] = useState(false);
   const { id } = useParams();
   const [movieData, setMovieData] = useState({});
+  const [hasBoughtPackage, setHasBoughtPackage] = useState(false);
 
   useEffect(() => {
     const fetchMovieDetail = async () => {
@@ -26,7 +27,23 @@ const UserMovieDetails = () => {
     fetchMovieDetail();
   }, [id]);
 
-  // const videoId = getYouTubeVideoId(movieData?.source || "");
+  useEffect(() => {
+    const checkPackage = async () => {
+      try {
+        const member_id = localStorage.getItem("member_id");
+        const response = await checkBoughtPackage(member_id);
+        setHasBoughtPackage(response.data);
+      } catch (error) {
+        console.log(error.message);
+        notification.error({ message: "Failed to check package" });
+      }
+    };
+
+    if (isLoggedIn()) {
+      checkPackage();
+    }
+  }, []);
+
   const trailerId = getYouTubeVideoId(movieData?.trailer || "");
   const [watchButtonState, setWatchButtonState] = useState({
     active: false,
@@ -41,17 +58,24 @@ const UserMovieDetails = () => {
 
   const handleWatchButtonClick = () => {
     if (isLoggedIn()) {
-      setShowVideo(true);
-      setShowTrailer(false);
-      setWatchButtonState({
-        active: true,
-        color: "#e50914",
-        svgColor: "white",
-      });
-      setTrailerButtonState({
-        active: false,
-        color: "#17161b",
-      });
+      if (hasBoughtPackage) {
+        setShowVideo(true);
+        setShowTrailer(false);
+        setWatchButtonState({
+          active: true,
+          color: "#e50914",
+          svgColor: "white",
+        });
+        setTrailerButtonState({
+          active: false,
+          color: "#17161b",
+        });
+      } else {
+        notification.warning({
+          message: "Yêu cầu mua gói",
+          description: "Vui lòng đăng ký gói phim để xem.",
+        });
+      }
     } else {
       notification.warning({
         message: "Yêu cầu đăng nhập",
