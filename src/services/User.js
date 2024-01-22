@@ -19,4 +19,10 @@ const setUserInfo = (info) => {
   return axios.post(api, info);
 };
 
-export { getUserInfo, getUserLogin, getUserPass, setUserInfo };
+//Package
+
+const getListPackage = () => {
+  return axios.get("package/viewAllPackage");
+};
+
+export { getUserInfo, getUserLogin, getUserPass, setUserInfo, getListPackage };

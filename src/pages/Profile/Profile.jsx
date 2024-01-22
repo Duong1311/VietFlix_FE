@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
 import { getUserInfo, getUserPass, setUserInfo } from "../../services/User";
+import { getListPackage } from "../../services/User";
 
 const Profile = () => {
   const userID = localStorage.getItem("member_id");
@@ -16,10 +17,33 @@ const Profile = () => {
   const [isEdit, setIsEdit] = useState(false);
 
   const [info, setInfo] = useState({});
+  const [moviePackages, setMoviePackages] = useState([]);
+  const [showPackages, setShowPackages] = useState(false);
+
+  const fetchPackages = async () => {
+    try {
+      const response = await getListPackage();
+      setMoviePackages(response.data);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  useEffect(() => {
+    getInfo(userID);
+    fetchPackages();
+  }, [userID]);
+
+  const handleBuyClick = () => {
+    setShowPackages(!showPackages);
+    setActive(false);
+    setInputOld(false);
+  };
 
   const handleClick = () => {
     setActive(!active);
     setInputOld(!inputOld);
+    setShowPackages(false);
   };
 
   const handleSubmit = async () => {
@@ -104,10 +128,13 @@ const Profile = () => {
           </div>
         </div>
         <div className="flex flex-row">
-          <button className="rounded-3xl bg-[#17161B] py-2 px-6 flex justify-center items-center">
+          <button
+            onClick={handleBuyClick}
+            style={{ backgroundColor: showPackages ? "#5B5B5B" : "#17161B" }}
+            className="rounded-3xl bg-[#17161B] py-2 px-6 flex justify-center items-center ml-6"
+          >
             <div>Mua gói xem phim</div>
           </button>
-
           <button
             onClick={handleClick}
             style={{ backgroundColor: active ? "#5B5B5B" : "#17161B" }}
@@ -117,6 +144,21 @@ const Profile = () => {
           </button>
         </div>
         {/* form */}
+        {showPackages && (
+          <div className="mt-4">
+            <h2 className="text-2xl font-semibold mb-2">
+              Danh sách gói xem phim
+            </h2>
+            <ul>
+              {moviePackages.map((moviePackage) => (
+                <li key={moviePackage.pack_id}>
+                  {moviePackage.pack_name} - {moviePackage.price} VND -{" "}
+                  {moviePackage.pack_time} tháng
+                </li>
+              ))}
+            </ul>
+          </div>
+        )}
         {inputOld && (
           <div className="flex flex-col w-[19em] mt-8">
             <div>Insert password to continue</div>
