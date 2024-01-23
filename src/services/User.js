@@ -15,6 +15,7 @@ const getUserPass = (member_id) => {
 };
 
 const setUserInfo = (info) => {
+  console.log(info);
   const api = "members/changeInfo";
   return axios.post(api, info);
 };

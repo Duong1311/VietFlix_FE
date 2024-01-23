@@ -44,6 +44,8 @@ const Login = ({ visible, onClose, login }) => {
 
           login();
           onClose();
+        } else {
+          notification.error({ message: "Đăng nhập thất bại!" });
         }
       }
       location.reload();

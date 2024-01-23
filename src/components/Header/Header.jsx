@@ -101,7 +101,7 @@ export default function Header() {
             />
           </div>
           <div className=" flex flex-row text-white">
-            <div className="mr-3 flex flex-row justify-center items-center">
+            {/* <div className="mr-3 flex flex-row justify-center items-center">
               <div className="self-center">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
@@ -115,7 +115,7 @@ export default function Header() {
                 </svg>
               </div>
               <div className="leading-6">Home</div>
-            </div>
+            </div> */}
 
             {!isLogin ? (
               <div

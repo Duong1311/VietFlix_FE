@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { FaUserCircle } from "react-icons/fa";
+
 import {
   getUserInfo,
   getUserPass,
@@ -11,8 +12,8 @@ import {
 const Profile = () => {
   const userID = localStorage.getItem("member_id");
   const [user, setUser] = useState("");
-  const [userName, setUserName] = useState("");
-  const [userNewPass, setNewPass] = useState("");
+  // const [userName, setUserName] = useState("");
+  // const [userNewPass, setNewPass] = useState("");
   const [userOldPass, setOldPass] = useState("");
   const [userConfPass, setConfPass] = useState("");
 
@@ -21,7 +22,14 @@ const Profile = () => {
 
   const [isEdit, setIsEdit] = useState(false);
 
-  const [info, setInfo] = useState({});
+  const [info, setInfo] = useState({
+    member_id: userID,
+    mail: user.mail,
+    pass: "",
+    member_name: "",
+    package_id: user.package_id,
+    exp_package: user.exp_package,
+  });
   const [moviePackages, setMoviePackages] = useState([]);
   const [showPackages, setShowPackages] = useState(false);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
@@ -68,20 +76,25 @@ const Profile = () => {
     }
   };
 
+  const handleEdit1 = (event) => {
+    const { name, value } = event.target;
+    setInfo((prevState) => ({
+      ...prevState,
+      [name]: value,
+      member_id: userID,
+      mail: user.mail,
+      package_id: user.package_id,
+      exp_package: user.exp_package,
+    }));
+    console.log(info);
+  };
+
   const handEdit = async () => {
     try {
-      setInfo({
-        member_id: userID,
-        mail: user.mail,
-        pass: userNewPass,
-        member_name: userName,
-        package_id: user.package_id,
-        exp_package: user.exp_package,
-      });
       const res = await setUserInfo(info);
       console.log(res.data);
-      alert(res.data);
       setUser(res.data);
+      window.location.reload();
     } catch (error) {
       console.log(error.message);
     }
@@ -361,15 +374,17 @@ const Profile = () => {
             <input
               type="text"
               className="w-full mt-3 rounded-md px-3 py-2 text-black"
-              value={userName}
-              onChange={(event) => setUserName(event.target.value)}
+              name="member_name"
+              value={info.member_name}
+              onChange={handleEdit1}
             />
             <div className="mt-3">New Password</div>
             <input
               type="text"
               className="w-full mt-3 rounded-md px-3 py-2 text-black"
-              value={userNewPass}
-              onChange={(event) => setNewPass(event.target.value)}
+              name="pass"
+              value={info.pass}
+              onChange={handleEdit1}
             />
             <div className="mt-3">Confirm Password</div>
             <input
