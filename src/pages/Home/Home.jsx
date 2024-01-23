@@ -146,7 +146,8 @@ const Home = () => {
       getSearchMovie(params.search);
       return;
     }
-    getMoviesFilter(params.genre + "-" + params.language + "-" + params.year);
+
+    getMoviesFilter(params.language + "-" + params.genre + "-" + params.year);
   }, [pathname.search]);
 
   return (

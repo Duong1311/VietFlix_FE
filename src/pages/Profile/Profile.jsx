@@ -86,7 +86,6 @@ const Profile = () => {
       package_id: user.package_id,
       exp_package: user.exp_package,
     }));
-    console.log(info);
   };
 
   const handEdit = async () => {
@@ -94,6 +93,8 @@ const Profile = () => {
       const res = await setUserInfo(info);
       console.log(res.data);
       setUser(res.data);
+      localStorage.setItem("member_name", info.member_name);
+
       window.location.reload();
     } catch (error) {
       console.log(error.message);

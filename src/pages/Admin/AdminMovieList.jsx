@@ -81,7 +81,7 @@ const MovieList = () => {
   ];
 
   return (
-    <CRow className="min-h-[100vh] m-6">
+    <CRow className="min-h-[100vh] m-6 ">
       <CCol>
         <CCard>
           <CCardHeader className="flex justify-center text-3xl items-center mb-8">
