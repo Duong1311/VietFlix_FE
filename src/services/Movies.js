@@ -24,6 +24,11 @@ const addFavMovie = (movieId, memberId) => {
   return axios.post(api);
 };
 
+const addHistoryMovie = (movieId, memberId) => {
+  const api = `/movies/watch/${movieId}-${memberId}`;
+  return axios.get(api);
+};
+
 const getMemberHistory = (id) => {
   const api = `movies/viewMovieHistory/${id}`;
   return axios.get(api);
@@ -64,4 +69,5 @@ export {
   addFavMovie,
   getMemberHistory,
   getMemberFavorite,
+  addHistoryMovie,
 };

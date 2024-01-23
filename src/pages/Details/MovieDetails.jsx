@@ -1,7 +1,11 @@
 /* eslint-disable no-useless-escape */
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { getUserMovieDetailByID, addFavMovie } from "../../services/Movies";
+import {
+  getUserMovieDetailByID,
+  addFavMovie,
+  addHistoryMovie,
+} from "../../services/Movies";
 import { notification } from "antd";
 import Artplayer from "./ArtPlayer.jsx";
 import { isLoggedIn, checkBoughtPackage } from "../../services/User.js";
@@ -75,6 +79,20 @@ const UserMovieDetails = () => {
           active: false,
           color: "#17161b",
         });
+        const member_id = localStorage.getItem("member_id");
+        const movieId = movieData.id;
+
+        if (member_id && movieId) {
+          addHistoryMovie(movieId, member_id)
+            .then(() => {
+              console.log("Lịch sử xem phim đã được lưu.");
+            })
+            .catch((error) => {
+              console.error("Lỗi khi lưu lịch sử xem phim", error);
+            });
+        } else {
+          console.error("Không thể lấy memberId hoặc movieId");
+        }
       } else {
         notification.warning({
           message: "Yêu cầu mua gói",

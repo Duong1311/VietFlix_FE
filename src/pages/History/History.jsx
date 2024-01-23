@@ -12,7 +12,7 @@ const History = () => {
       try {
         const res = await getMemberHistory(id);
         console.log(res.data);
-        setData(res.data);
+        setData(res.data.reverse());
       } catch (error) {
         console.log(error.message);
       }
