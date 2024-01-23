@@ -47,7 +47,7 @@ const Favorite = () => {
                 <div key={data?.id}>
                   <Link to={`/details/${data.id}`} className="relative">
                     <img
-                      className="hover:scale-110 transform transition duration-y z-0"
+                      className="hover:scale-110 transform transition duration-y z-0 object-cover w-[239px] h-[338px]"
                       src={data?.thumbnail}
                       alt=""
                     />

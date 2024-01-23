@@ -25,8 +25,8 @@ const Login = ({ visible, onClose, login }) => {
     // console.log(email, pass);
     try {
       if (email === "admin@gmail.com" && pass === "admin") {
-        localStorage.setItem("member_id", 100);
-        localStorage.setItem("isLogin", true);
+        localStorage.setItem("member_id", 0);
+        localStorage.setItem("isLogin", false);
         localStorage.setItem("member_name", "Admin");
         notification.success({
           message: "Đăng nhập thành công!",
@@ -34,21 +34,22 @@ const Login = ({ visible, onClose, login }) => {
         login();
         onClose();
         navigate("/adm-list");
+        location.reload();
       } else {
         const res = await getUserLogin(email, pass);
-        console.log(res.data);
-        if (res.data != "") {
+        // console.log(res.data);
+        if (res.data && res) {
           localStorage.setItem("member_id", res.data.member_id);
           localStorage.setItem("isLogin", true);
           localStorage.setItem("member_name", res.data.member_name);
 
           login();
           onClose();
+          location.reload();
         } else {
           notification.error({ message: "Đăng nhập thất bại!" });
         }
       }
-      location.reload();
     } catch (error) {
       console.log(error.message);
       notification.error({ message: "Đăng nhập thất bại!" });
