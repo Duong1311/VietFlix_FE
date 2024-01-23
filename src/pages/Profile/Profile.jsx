@@ -8,6 +8,7 @@ import {
   getListPackage,
   payPackage,
 } from "../../services/User";
+import { notification } from "antd";
 
 const Profile = () => {
   const userID = localStorage.getItem("member_id");
@@ -90,12 +91,16 @@ const Profile = () => {
 
   const handEdit = async () => {
     try {
-      const res = await setUserInfo(info);
-      console.log(res.data);
-      setUser(res.data);
-      localStorage.setItem("member_name", info.member_name);
+      if (userConfPass === info.pass) {
+        const res = await setUserInfo(info);
+        console.log(res.data);
+        setUser(res.data);
+        localStorage.setItem("member_name", info.member_name);
 
-      window.location.reload();
+        window.location.reload();
+      } else {
+        notification.error({ message: "Mật khẩu chưa khớp !" });
+      }
     } catch (error) {
       console.log(error.message);
     }
