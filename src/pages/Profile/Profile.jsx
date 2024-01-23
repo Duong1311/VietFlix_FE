@@ -72,6 +72,8 @@ const Profile = () => {
       if (userOldPass == res.data) {
         setIsEdit(true);
         setInputOld(false);
+      } else {
+        notification.error({ message: "Mật khẩu chưa khớp !" });
       }
     } catch (error) {
       console.log(error.message);
@@ -357,7 +359,7 @@ const Profile = () => {
         )}
         {inputOld && (
           <div className="flex flex-col w-[19em] mt-8">
-            <div>Insert password to continue</div>
+            <div>Nhập mật khẩu để tiếp tục</div>
             <input
               type="text"
               className="w-full mt-3 rounded-md px-3 py-2 text-black"
@@ -369,7 +371,7 @@ const Profile = () => {
                 className="bg-[#E50914] rounded-3xl py-2 px-6"
                 onClick={handleSubmit}
               >
-                <div>Continue</div>
+                <div>Tiếp tục</div>
               </button>
             </div>
           </div>
@@ -405,7 +407,7 @@ const Profile = () => {
                 onClick={handEdit}
                 className="bg-[#E50914] rounded-3xl py-2 px-6"
               >
-                <div>Continue</div>
+                <div>Thay đổi</div>
               </button>
             </div>
           </div>
