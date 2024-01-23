@@ -54,6 +54,7 @@ const Profile = () => {
     setShowPackages(!showPackages);
     setActive(false);
     setInputOld(false);
+    setIsEdit(false);
   };
 
   const handleClick = () => {
